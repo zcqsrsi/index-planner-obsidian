@@ -1,0 +1,82 @@
+/* Index — the gold/teal pair from index-planner, ported to Obsidian.
+   Light mode: Index Dawn (gold on paper). Dark mode: Index Bright —
+   the app's own default. The --ir-* tokens re-tune the Index Ring
+   plugin's fate colors. */
+
+body.theme-light {
+  --background-primary: #f2efe6;
+  --background-primary-alt: #dfdccc;
+  --background-secondary: #e9e6db;
+  --background-secondary-alt: #eae7dc;
+  --titlebar-background: #e9e6db;
+  --titlebar-background-focused: #e9e6db;
+  --titlebar-text: #7d786a;
+  --text-normal: #33302a;
+  --text-muted: #7d786a;
+  --text-faint: color-mix(in srgb, #7d786a 66%, transparent);
+  --text-accent: #b3822a;
+  --text-accent-hover: #9c6f22;
+  --text-on-accent: #1d1405;
+  --interactive-accent: #b3822a;
+  --interactive-accent-hover: #9c6f22;
+  --background-modifier-border: #d8d4c6;
+  --background-modifier-border-hover: #dfdccc;
+  --background-modifier-border-focus: #b3822a;
+  --checkbox-color: #b3822a;
+  --checkbox-color-hover: #9c6f22;
+  --checkbox-marker-color: #1d1405;
+  --link-color: #b3822a;
+  --link-color-hover: #9c6f22;
+  --link-unresolved-color: #b0472e;
+  --code-background: #eae7dc;
+  --code-comment: #7d786a;
+  --code-function: #a3760f;
+  --code-keyword: #b0472e;
+  --code-string: #5f7d3a;
+  --code-value: #38697e;
+  --code-property: #3d7376;
+  --code-tag: #b0472e;
+  --ir-healthy: #b3822a;
+  --ir-overdue: #b0472e;
+  --ir-stale: #a3760f;
+  --ir-dim: #7d786a;
+}
+
+body.theme-dark {
+  --background-primary: #23292e;
+  --background-primary-alt: #2e363d;
+  --background-secondary: #171a1d;
+  --background-secondary-alt: #21272d;
+  --titlebar-background: #171a1d;
+  --titlebar-background-focused: #171a1d;
+  --titlebar-text: #a1998b;
+  --text-normal: #f0ede3;
+  --text-muted: #a1998b;
+  --text-faint: color-mix(in srgb, #a1998b 66%, transparent);
+  --text-accent: #8abec0;
+  --text-accent-hover: #9ccbcc;
+  --text-on-accent: #10161a;
+  --interactive-accent: #8abec0;
+  --interactive-accent-hover: #9ccbcc;
+  --background-modifier-border: #2c333a;
+  --background-modifier-border-hover: #2e363d;
+  --background-modifier-border-focus: #8abec0;
+  --checkbox-color: #8abec0;
+  --checkbox-color-hover: #9ccbcc;
+  --checkbox-marker-color: #10161a;
+  --link-color: #8abec0;
+  --link-color-hover: #9ccbcc;
+  --link-unresolved-color: #eb8163;
+  --code-background: #21272d;
+  --code-comment: #a1998b;
+  --code-function: #eeba63;
+  --code-keyword: #eb8163;
+  --code-string: #b0d193;
+  --code-value: #9dc8da;
+  --code-property: #8abec0;
+  --code-tag: #eb8163;
+  --ir-healthy: #8abec0;
+  --ir-overdue: #eb8163;
+  --ir-stale: #eeba63;
+  --ir-dim: #a1998b;
+}

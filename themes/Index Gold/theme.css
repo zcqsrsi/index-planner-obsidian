@@ -1,0 +1,84 @@
+/* Index Gold — the index pair from index-planner, ported to Obsidian.
+   Light mode: Index Dawn (gold). Dark mode: Index (gold).
+   The --ir-* tokens re-tune the Index Ring plugin's fate colors:
+   healthy = accent, overdue = keyword, stale = func, as in the app's
+   own FATE_COLOR table (so a pair where func equals accent shows it
+   in the app too). Hover shades mix the accent toward the text colour. */
+
+body.theme-light {
+  --background-primary: #f2efe6;
+  --background-primary-alt: #dfdccc;
+  --background-secondary: #e9e6db;
+  --background-secondary-alt: #eae7dc;
+  --titlebar-background: #e9e6db;
+  --titlebar-background-focused: #e9e6db;
+  --titlebar-text: #6e6a5c;
+  --text-normal: #33302a;
+  --text-muted: #7d786a;
+  --text-faint: color-mix(in srgb, #7d786a 66%, transparent);
+  --text-accent: #b3822a;
+  --text-accent-hover: color-mix(in srgb, #b3822a 82%, #33302a);
+  --text-on-accent: #1d1405;
+  --interactive-accent: #b3822a;
+  --interactive-accent-hover: color-mix(in srgb, #b3822a 82%, #33302a);
+  --background-modifier-border: #d8d4c6;
+  --background-modifier-border-hover: #dfdccc;
+  --background-modifier-border-focus: #b3822a;
+  --checkbox-color: #b3822a;
+  --checkbox-color-hover: color-mix(in srgb, #b3822a 82%, #33302a);
+  --checkbox-marker-color: #1d1405;
+  --link-color: #b3822a;
+  --link-color-hover: color-mix(in srgb, #b3822a 82%, #33302a);
+  --link-unresolved-color: #b0472e;
+  --code-background: #eae7dc;
+  --code-comment: #7d786a;
+  --code-function: #a3760f;
+  --code-keyword: #b0472e;
+  --code-string: #5f7d3a;
+  --code-value: #38697e;
+  --code-property: #3d7376;
+  --code-tag: #b0472e;
+  --ir-healthy: #b3822a;
+  --ir-overdue: #b0472e;
+  --ir-stale: #a3760f;
+  --ir-dim: #7d786a;
+}
+
+body.theme-dark {
+  --background-primary: #191c1e;
+  --background-primary-alt: #2c3339;
+  --background-secondary: #16191b;
+  --background-secondary-alt: #20252a;
+  --titlebar-background: #16191b;
+  --titlebar-background-focused: #16191b;
+  --titlebar-text: #a09a8c;
+  --text-normal: #d6d2c6;
+  --text-muted: #807a6c;
+  --text-faint: color-mix(in srgb, #807a6c 66%, transparent);
+  --text-accent: #cfa050;
+  --text-accent-hover: color-mix(in srgb, #cfa050 82%, #d6d2c6);
+  --text-on-accent: #17130a;
+  --interactive-accent: #cfa050;
+  --interactive-accent-hover: color-mix(in srgb, #cfa050 82%, #d6d2c6);
+  --background-modifier-border: #262b2f;
+  --background-modifier-border-hover: #2c3339;
+  --background-modifier-border-focus: #cfa050;
+  --checkbox-color: #cfa050;
+  --checkbox-color-hover: color-mix(in srgb, #cfa050 82%, #d6d2c6);
+  --checkbox-marker-color: #17130a;
+  --link-color: #cfa050;
+  --link-color-hover: color-mix(in srgb, #cfa050 82%, #d6d2c6);
+  --link-unresolved-color: #cc6a56;
+  --code-background: #20252a;
+  --code-comment: #807a6c;
+  --code-function: #cfa050;
+  --code-keyword: #cc6a56;
+  --code-string: #8fa870;
+  --code-value: #7fa6b8;
+  --code-property: #6e9a9c;
+  --code-tag: #cc6a56;
+  --ir-healthy: #cfa050;
+  --ir-overdue: #cc6a56;
+  --ir-stale: #cfa050;
+  --ir-dim: #807a6c;
+}

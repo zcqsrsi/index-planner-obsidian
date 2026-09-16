@@ -1,0 +1,933 @@
+/* Index Ring styles. Fate colors come from tokens so the paired themes
+   (Index Navy, Index) re-tune them per light/dark; the defaults below map
+   onto Obsidian's own variables for any other theme. */
+
+.index-ring-view, .index-pane-view {
+  --ir-healthy: var(--text-accent);
+  --ir-overdue: #d05a4c;
+  --ir-stale: #c9a23f;
+  --ir-dim: var(--text-faint);
+  padding: 0;
+  display: flex;
+  overflow: hidden;
+}
+
+/* The map fills its leaf: the overview bar up top, the ring given the
+   room, the projects list docked at the bottom of the screen. */
+.ir-wrap {
+  flex: 1 1 0;
+  min-width: 0;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  padding: 18px 20px 14px;
+}
+
+/* The hideable overview bar, the original's hero: the day, the count chips,
+   and ＋ New project. Hidden, it leaves its ⌃ overview link behind. */
+.ir-hero {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+  padding-bottom: 12px;
+}
+.ir-hero-date { display: flex; flex-direction: column; gap: 1px; }
+.ir-hero-day { font-size: 15px; font-weight: 600; color: var(--text-normal); }
+.ir-hero-sub { font-size: var(--font-ui-smaller, 11px); color: var(--text-muted); }
+.ir-hero-counts { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; flex: 1 1 auto; }
+.ir-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 9px;
+  border: 1px solid var(--background-modifier-border);
+  border-radius: 999px;
+  font-family: var(--font-interface);
+  font-size: var(--font-ui-smaller, 11px);
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+.ir-chip b { font-weight: 600; }
+.ir-chip.ir-chip-od { color: var(--ir-overdue); border-color: var(--ir-overdue); }
+.ir-chip.ir-chip-td { color: var(--ir-healthy); border-color: var(--ir-healthy); }
+.ir-chip.b-calm { color: var(--ir-healthy); }
+.ir-chip.b-warm { color: var(--ir-stale); }
+.ir-chip.b-hot { color: var(--ir-overdue); }
+.ir-hero-new {
+  padding: 3px 10px;
+  background: none;
+  border: 1px solid var(--background-modifier-border);
+  border-radius: 999px;
+  color: var(--text-muted);
+  font-family: var(--font-interface);
+  font-size: var(--font-ui-smaller, 11px);
+  cursor: pointer;
+  white-space: nowrap;
+}
+.ir-hero-new:hover {
+  color: var(--text-normal);
+  border-color: var(--background-modifier-border-hover);
+  background: var(--background-modifier-hover);
+}
+.ir-overview-toggle {
+  margin-left: auto;
+  padding: 2px 4px;
+  background: none;
+  border: none;
+  color: var(--text-faint);
+  font-family: var(--font-interface);
+  font-size: var(--font-ui-smaller, 11px);
+  cursor: pointer;
+  white-space: nowrap;
+}
+.ir-overview-toggle:hover { color: var(--text-normal); }
+.ir-overview-row { flex: none; display: flex; justify-content: flex-end; padding-bottom: 8px; }
+
+/* The ring takes the room; the projects list docks at the screen's
+   bottom, its list rising above the fold head. The ring sizes by the
+   HEIGHT the layout leaves it — a docked list open on a short screen
+   shrinks the ring, never squeezes or clips it. */
+.ir-stage {
+  flex: 1 1 0;
+  min-height: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ir-ring {
+  height: min(460px, 100%);
+  width: auto;
+  max-width: 100%;
+  display: block;
+  margin: 0 auto;
+}
+
+/* The rotor turns by inline transform, driven from ring.js so the phase
+   survives every re-render (a CSS animation would restart at 0° each time
+   the view rebuilds on a note edit). It rests under the pointer; the glow
+   is the app's hologram light. */
+.ir-rotor {
+  transform-origin: 180px 180px;
+  /* Hologram glow: the plates throw light, as the app's ring. */
+  filter: drop-shadow(0 0 7px color-mix(in srgb, var(--text-accent) 40%, transparent));
+}
+
+/* Plates: hover binds to the wider invisible hit path — lifting the plate
+   itself would slide it out from under the cursor and flicker. */
+.ir-plate { cursor: pointer; transition: transform 120ms ease, stroke-opacity 120ms; }
+.ir-plate-g:hover .ir-plate { stroke-opacity: 1; }
+.ir-plate-hit { cursor: pointer; }
+.ir-plate.f-healthy { stroke: var(--ir-healthy); }
+.ir-plate.f-overdue { stroke: var(--ir-overdue); }
+.ir-plate.f-stale { stroke: var(--ir-stale); }
+.ir-plate.f-shelved { stroke: var(--ir-dim); }
+.ir-done { pointer-events: none; }
+.ir-tick { cursor: pointer; }
+.ir-tick:hover { stroke-width: 4; }
+
+.ir-center-num {
+  font-size: 40px;
+  font-weight: 600;
+  text-anchor: middle;
+  fill: var(--text-normal);
+  /* The count follows the interface font the user chose in Obsidian's
+     appearance settings. The override variable is preferred first: a
+     theme that redefines --font-interface without Obsidian's chain would
+     otherwise swallow the user's pick. */
+  font-family: var(--font-interface-override, var(--font-interface));
+}
+.ir-center-num.b-calm { fill: var(--ir-healthy); }
+.ir-center-num.b-warm { fill: var(--ir-stale); }
+.ir-center-num.b-hot { fill: var(--ir-overdue); }
+.ir-center-label {
+  font-size: 12px;
+  text-anchor: middle;
+  fill: var(--text-muted);
+  font-family: var(--font-interface-override, var(--font-interface));
+}
+
+.ir-legend {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  max-width: 460px;
+  width: 100%;
+  margin: 2px auto 0;
+  /* Docked open, the list rises from the screen's bottom and scrolls
+     itself — capped at a third of the screen so the ring keeps the room. */
+  max-height: 32vh;
+  overflow-y: auto;
+}
+
+/* The hideable projects list: the header stays put as the fold button. */
+/* The docked projects fold: its head rides the screen's bottom, the list
+   unfolds above it. */
+.ir-projects {
+  flex: none;
+  max-width: 460px;
+  width: 100%;
+  margin: 12px auto 0;
+}
+.ir-projects-head {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  width: 100%;
+  padding: 4px 10px;
+  background: none;
+  border: none;
+  border-radius: var(--radius-s, 4px);
+  color: var(--text-muted);
+  font-family: var(--font-interface);
+  font-size: var(--font-ui-smaller, 11px);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: .05em;
+  text-align: left;
+  cursor: pointer;
+}
+.ir-projects-head:hover {
+  background: var(--background-modifier-hover);
+  color: var(--text-normal);
+}
+.ir-fold-caret { margin-left: auto; color: var(--text-faint); }
+/* The UA's [hidden] rule loses to this sheet's display:flex — fold by hand. */
+.ir-legend[hidden] { display: none; }
+.ir-legend-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 10px;
+  width: 100%;
+  background: none;
+  border: none;
+  border-left: 2px solid transparent;
+  border-radius: var(--radius-s, 4px);
+  color: var(--text-muted);
+  font-family: var(--font-interface);
+  font-size: var(--font-ui-small, 13px);
+  text-align: left;
+  cursor: pointer;
+}
+.ir-legend-item:hover {
+  background: var(--background-modifier-hover);
+  color: var(--text-normal);
+  border-left-color: var(--ir-healthy);
+}
+.ir-dot { width: 7px; height: 7px; border-radius: 50%; flex: none; }
+.ir-dot.f-healthy { background: var(--ir-healthy); }
+.ir-dot.f-overdue { background: var(--ir-overdue); }
+.ir-dot.f-stale { background: var(--ir-stale); }
+.ir-dot.f-shelved { background: var(--ir-dim); }
+.ir-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ir-meta {
+  margin-left: auto;
+  color: var(--text-faint);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+/* Groups: foldered projects fold under their folder's header — the folder
+   is the group, as Index's legend. Session-only fold. */
+.ir-legend-group {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin-top: 4px;
+}
+.ir-legend-group-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 3px 10px;
+  background: none;
+  border: none;
+  border-radius: var(--radius-s, 4px);
+  color: var(--text-muted);
+  font-family: var(--font-interface);
+  font-size: var(--font-ui-smaller, 11px);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: .05em;
+  text-align: left;
+  cursor: pointer;
+}
+.ir-legend-group-head:hover { background: var(--background-modifier-hover); color: var(--text-normal); }
+.ir-legend-group-head .ir-fold-caret { color: var(--text-faint); margin: 0; }
+.ir-legend-group-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ir-legend-group-block { display: flex; flex-direction: column; gap: 2px; }
+.ir-legend-group-block[hidden] { display: none; }
+.ir-legend-group-block .ir-legend-item { padding-left: 22px; }
+
+/* The shelf: shelved projects, out of the count but not out of sight. */
+.ir-shelf-head {
+  margin-top: 8px;
+  padding: 3px 10px;
+  color: var(--text-faint);
+  font-family: var(--font-interface);
+  font-size: var(--font-ui-smaller, 11px);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: .05em;
+}
+
+/* A stale-thread count chip — the same token as the ring's fate. */
+.ir-stale-badge {
+  flex: none;
+  margin-left: 4px;
+  padding: 0 5px;
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--ir-stale) 22%, transparent);
+  color: var(--ir-stale);
+  font-family: var(--font-interface);
+  font-size: var(--font-ui-smallest, 10px);
+  font-variant-numeric: tabular-nums;
+  line-height: 16px;
+}
+
+/* The project pane — its own leaf beside the map, as Index's Projects
+   view: big picture, then the quest log read off the note's headings,
+   then the pages index. Every click opens the real note beside it. */
+.ir-pane {
+  flex: 1 1 0;
+  min-width: 0;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+.ir-pane-head {
+  flex: none;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--background-modifier-border);
+  background: var(--background-secondary-alt);
+}
+/* Long titles wrap to the leaf's width — every word renders; the meta and
+   the buttons drop to a fresh line only when the width says so. */
+.ir-pane-name {
+  flex: 0 1 auto;
+  min-width: 0;
+  font-family: var(--font-interface);
+  font-size: var(--font-ui-medium, 14px);
+  font-weight: 600;
+  line-height: 1.35;
+  color: var(--text-normal);
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+.ir-pane-meta {
+  margin-left: auto;
+  color: var(--text-faint);
+  font-family: var(--font-interface);
+  font-size: var(--font-ui-smaller, 11px);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.ir-open-note {
+  flex: none;
+  font-family: var(--font-interface);
+  font-size: var(--font-ui-smaller, 11px);
+  color: var(--text-muted);
+  background: none;
+  border: 1px solid var(--background-modifier-border);
+  border-radius: var(--radius-s, 4px);
+  padding: 2px 8px;
+  cursor: pointer;
+}
+.ir-open-note:hover { color: var(--text-normal); border-color: var(--background-modifier-border-hover); }
+
+.ir-pane-scroll {
+  flex: 1 1 0;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 12px 12px 18px;
+}
+
+/* The pane's bottom folds — the Tasks fold's idiom, tidied to the foot:
+   Notes and Open questions unfold their rows, the project-note row opens
+   the raw note. */
+.ir-pane-extras { margin-top: 14px; }
+.ir-extras-body {
+  margin: 2px 0 6px;
+  padding-left: 10px;
+  border-left: 1px solid var(--background-modifier-border);
+}
+.ir-extras-body[hidden] { display: none; }
+
+/* The questions list view: this project's spun-off questions, one row per
+   thread. Same surfaces as the pane's notes rows — click opens, right-click
+   carries the row menu. */
+.index-questions-view { padding: 0; }
+.ir-questions-head {
+  padding: 10px 12px 6px;
+  border-bottom: 1px solid var(--background-modifier-border);
+}
+.ir-questions-head h3 {
+  margin: 0;
+  font-family: var(--font-interface);
+  font-size: var(--font-ui-medium, 13px);
+  font-weight: 600;
+}
+.ir-questions-sub {
+  color: var(--text-muted);
+  font-family: var(--font-interface);
+  font-size: var(--font-ui-smaller, 11px);
+  padding-top: 2px;
+}
+.ir-questions-list { padding: 6px 8px; }
+.ir-question-row {
+  display: flex;
+  align-items: baseline;
+  width: 100%;
+  padding: 5px 8px;
+  border-radius: var(--radius-s, 4px);
+  cursor: pointer;
+}
+.ir-question-row:hover { background: var(--background-modifier-hover); }
+.ir-question-name {
+  color: var(--text-normal);
+  font-family: var(--font-interface);
+  font-size: var(--font-ui-small, 12px);
+  overflow-wrap: anywhere;
+}
+
+/* The big picture banner, from the note's question: field. */
+.ir-bp {
+  border: 1px solid var(--background-modifier-border);
+  border-radius: var(--radius-m, 8px);
+  background: var(--background-secondary);
+  padding: 8px 12px;
+  margin-bottom: 12px;
+}
+.ir-bp-label {
+  font-family: var(--font-interface);
+  font-size: var(--font-ui-smaller, 11px);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: .05em;
+  color: var(--text-faint);
+  margin-bottom: 3px;
+}
+/* The pencil rides the label row: quiet until the pointer finds it. */
+.ir-bp-edit {
+  background: none;
+  border: none;
+  padding: 0 2px;
+  margin-left: 6px;
+  font-size: var(--font-ui-smaller, 11px);
+  color: var(--text-faint);
+  opacity: 0;
+  cursor: pointer;
+  vertical-align: middle;
+}
+.ir-bp:hover .ir-bp-edit,
+.ir-bp-edit:focus { opacity: 1; }
+.ir-bp-edit:hover { color: var(--text-normal); }
+/* ＋ Big picture, offered when there is nothing yet to read. */
+.ir-bp-add {
+  display: block;
+  width: 100%;
+  margin: 0 0 12px;
+  padding: 6px 10px;
+  border: 1px dashed var(--background-modifier-border);
+  border-radius: var(--radius-m, 8px);
+  background: none;
+  color: var(--text-faint);
+  font-family: var(--font-interface);
+  font-size: var(--font-ui-smaller, 11px);
+  text-align: left;
+  cursor: pointer;
+}
+.ir-bp-add:hover { color: var(--text-normal); border-color: var(--text-faint); }
+.ir-bp-text {
+  font-family: var(--font-interface);
+  font-size: var(--font-ui-small, 13px);
+  color: var(--text-normal);
+}
+
+/* The tasks fold — the header stays put as the fold button, so the pane
+   can be all notes. */
+.ir-log-head {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  width: 100%;
+  padding: 4px 6px;
+  margin-bottom: 6px;
+  background: none;
+  border: none;
+  border-radius: var(--radius-s, 4px);
+  color: var(--text-muted);
+  font-family: var(--font-interface);
+  text-align: left;
+  cursor: pointer;
+}
+.ir-log-head:hover { background: var(--background-modifier-hover); color: var(--text-normal); }
+.ir-pane-title {
+  font-family: var(--font-interface);
+  font-size: var(--font-ui-smaller, 11px);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: .05em;
+  color: var(--text-faint);
+}
+.ir-log-head .ir-fold-caret { color: var(--text-faint); }
+
+/* The quest log: aims hold sub-objectives, sub-objectives hold day rows,
+   day rows hold the task checkboxes — the note's own outline. */
+.ir-aim { margin-bottom: 14px; }
+.ir-aim-head {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  margin-bottom: 6px;
+  font-family: var(--font-interface);
+  font-size: var(--font-ui-medium, 14px);
+  font-weight: 600;
+  color: var(--text-normal);
+}
+.ir-aim-mk { color: var(--ir-healthy); flex: none; }
+.ir-aim-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ir-aim-ct, .ir-sub-ct {
+  margin-left: auto;
+  flex: none;
+  color: var(--text-faint);
+  font-size: var(--font-ui-smaller, 11px);
+  font-weight: 400;
+  font-variant-numeric: tabular-nums;
+}
+.ir-aim.is-unfiled .ir-aim-name { color: var(--text-muted); font-weight: 500; }
+
+.ir-sub {
+  margin-left: 12px;
+  border-left: 1px solid var(--background-modifier-border);
+  padding-left: 10px;
+  margin-bottom: 10px;
+}
+.ir-sub-head {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  margin-bottom: 4px;
+  font-family: var(--font-interface);
+  font-size: var(--font-ui-small, 13px);
+  font-weight: 600;
+  color: var(--text-muted);
+}
+.ir-sub-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+.ir-day { margin: 0 0 6px 12px; }
+.ir-day-head {
+  font-family: var(--font-interface);
+  font-size: var(--font-ui-smaller, 11px);
+  color: var(--text-faint);
+  font-variant-numeric: tabular-nums;
+  margin-bottom: 3px;
+}
+
+.ir-task {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  width: 100%;
+  padding: 3px 6px;
+  background: none;
+  border: none;
+  border-left: 2px solid transparent;
+  border-radius: var(--radius-s, 4px);
+  color: var(--text-normal);
+  font-family: var(--font-interface);
+  font-size: var(--font-ui-small, 13px);
+  text-align: left;
+  cursor: pointer;
+}
+.ir-task:hover { background: var(--background-modifier-hover); }
+.ir-task.f-overdue { border-left-color: var(--ir-overdue); }
+.ir-task:hover:not(.f-overdue) { border-left-color: var(--ir-healthy); }
+.ir-task-box {
+  flex: none;
+  width: 12px;
+  height: 12px;
+  border: 1.5px solid var(--text-faint);
+  border-radius: 3px;
+  transform: translateY(1px);
+}
+.ir-task.f-overdue .ir-task-box { border-color: var(--ir-overdue); }
+.ir-task.is-done { color: var(--text-faint); }
+.ir-task.is-done .ir-task-text { text-decoration: line-through; }
+.ir-task.is-done .ir-task-box {
+  background: var(--ir-healthy);
+  border-color: var(--ir-healthy);
+}
+.ir-task-text {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.ir-task-due {
+  flex: none;
+  color: var(--text-faint);
+  font-size: var(--font-ui-smaller, 11px);
+  font-variant-numeric: tabular-nums;
+}
+.ir-task-due.late { color: var(--ir-overdue); }
+
+/* Index's inline date heat: a date in a title is coloured by how far out
+   it is — hot, warm, cold. */
+.ir-date { font-variant-numeric: tabular-nums; }
+.ir-date-hot { color: var(--ir-overdue); }
+.ir-date-warm { color: var(--ir-stale); }
+.ir-date-cold { color: var(--text-muted); }
+
+/* The day pulse: a dot riding the fraction of the day gone, on today's
+   row head. */
+.ir-day-pulse {
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  margin-left: 6px;
+  vertical-align: -0.5px;
+  background: conic-gradient(var(--ir-stale) calc(var(--frac, 0) * 360deg), transparent 0);
+  opacity: .8;
+}
+
+/* Carried: an open task from a past row reappears in today's row with a
+   "from" chip; its own row keeps it with a "still open" hint. */
+.ir-task-carried > .ir-task-text,
+.ir-task.is-carried > .ir-task-text { color: var(--text-muted); }
+.ir-task-from {
+  flex: none;
+  margin-left: 2px;
+  padding: 0 5px;
+  border-radius: 8px;
+  background: var(--background-modifier-hover);
+  color: var(--text-faint);
+  font-size: var(--font-ui-smallest, 10px);
+  line-height: 16px;
+  font-variant-numeric: tabular-nums;
+}
+.ir-task-open-hint {
+  flex: none;
+  color: var(--ir-stale);
+  font-size: var(--font-ui-smallest, 10px);
+  font-style: italic;
+}
+
+/* Task tags, as chips. */
+.ir-tag {
+  flex: none;
+  padding: 0 5px;
+  border-radius: 8px;
+  background: var(--background-modifier-hover);
+  color: var(--text-faint);
+  font-size: var(--font-ui-smallest, 10px);
+  line-height: 16px;
+}
+
+/* The ⋯ button — the task's menu, on click or right-click. */
+.ir-task-more {
+  flex: none;
+  background: none;
+  border: none;
+  padding: 0 2px;
+  color: var(--text-faint);
+  font-family: var(--font-interface);
+  font-size: var(--font-ui-small, 13px);
+  cursor: pointer;
+  opacity: 0;
+}
+.ir-task:hover .ir-task-more { opacity: 1; }
+.ir-task-more:hover { color: var(--text-normal); }
+
+/* Quick-add, as in Index: the input sits in today's row — Enter writes
+   the task; the row is created if the note has none yet. */
+.ir-add { margin: 4px 0 2px; }
+.ir-add-input {
+  width: 100%;
+  padding: 3px 6px;
+  background: none;
+  border: none;
+  border-left: 2px solid transparent;
+  border-radius: var(--radius-s, 4px);
+  color: var(--text-muted);
+  font-family: var(--font-interface);
+  font-size: var(--font-ui-small, 13px);
+}
+.ir-add-input::placeholder { color: var(--text-faint); font-style: italic; }
+.ir-add-input:hover { background: var(--background-modifier-hover); }
+.ir-add-input:focus {
+  outline: none;
+  background: var(--background-modifier-hover);
+  color: var(--text-normal);
+  border-left-color: var(--ir-healthy);
+}
+.ir-add-tools { display: flex; gap: 6px; margin-bottom: 8px; }
+.ir-add-btn, .ir-add-mini {
+  background: none;
+  border: 1px solid var(--background-modifier-border);
+  border-radius: var(--radius-s, 4px);
+  padding: 2px 8px;
+  color: var(--text-muted);
+  font-family: var(--font-interface);
+  font-size: var(--font-ui-smaller, 11px);
+  cursor: pointer;
+  flex: none;
+}
+.ir-add-btn:hover, .ir-add-mini:hover {
+  color: var(--text-normal);
+  border-color: var(--background-modifier-border-hover);
+  background: var(--background-modifier-hover);
+}
+
+/* An aim's notes button, as Index's per-section notes: the page count
+   beside the aim, ghost until hovered or open. Its list opens in place
+   under the head — the same page rows the Notes side carries. */
+.ir-aim-notes {
+  background: none;
+  border: none;
+  padding: 2px 4px;
+  color: var(--text-faint);
+  font-family: var(--font-interface);
+  font-size: var(--font-ui-smaller, 11px);
+  cursor: pointer;
+  flex: none;
+}
+.ir-aim-notes:hover, .ir-aim-notes.is-on { color: var(--ir-healthy); }
+.ir-aim-notes-list {
+  margin: 0 0 6px 17px;
+  padding-left: 10px;
+  border-left: 1px solid var(--background-modifier-border);
+}
+
+/* Drag and drop: a row that can be picked up says so, and dims while it
+   rides the pointer. */
+.ir-task[draggable="true"] { cursor: grab; }
+.ir-task[draggable="true"]:active { cursor: grabbing; }
+.ir-sub-head[draggable="true"] { cursor: grab; }
+.is-dragging { opacity: .4; }
+
+/* The progress glyph in the pane head — the app's project-head glyph, its
+   five styles (Settings → Index → Progress glyph): pulse (round marks, the
+   default) and nodes (diamonds) are one mark per thread up to 14, done
+   ones filled and glowing, the current one alive; bar, comet and filament
+   read the same fraction as a line. Drawn in the accent, thin strokes,
+   soft glow; motion dies under prefers-reduced-motion. */
+.ir-progress { display: inline-flex; gap: 3px; align-items: center; flex: none; }
+.ir-pg-node {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--text-faint);
+  opacity: .45;
+}
+.ir-pg-node.is-done {
+  background: var(--ir-healthy);
+  opacity: 1;
+  box-shadow: 0 0 5px color-mix(in srgb, var(--ir-healthy) 55%, transparent);
+}
+.ir-pg-node.is-current { background: var(--ir-healthy); opacity: 1; animation: ir-node-pulse 2s ease-in-out infinite; }
+/* Nodes: the same marks as diamonds — a rotation and a border. */
+.ir-progress.is-nodes { gap: 5px; }
+.ir-progress.is-nodes .ir-pg-node { border-radius: 1px; transform: rotate(45deg); }
+.ir-progress.is-nodes .ir-pg-node.is-current {
+  background: transparent;
+  border: 1px solid var(--ir-healthy);
+  opacity: 1;
+}
+@keyframes ir-node-pulse { 50% { opacity: .3; } }
+
+/* Bar: the plain default of the app's picker. */
+.ir-progress-bar {
+  width: 80px;
+  height: 4px;
+  border-radius: 2px;
+  background: var(--background-modifier-hover);
+  overflow: hidden;
+}
+.ir-pg-fill { display: block; height: 100%; border-radius: 2px; background: var(--ir-healthy); }
+
+/* Comet: a light riding a faint line, always moving — the project is. */
+.ir-pg-comet {
+  position: relative;
+  width: 80px;
+  height: 2px;
+  background: color-mix(in srgb, var(--ir-healthy) 25%, transparent);
+}
+.ir-pg-comet::after {
+  content: '';
+  position: absolute;
+  top: -1px;
+  left: 0;
+  width: 18px;
+  height: 4px;
+  border-radius: 2px;
+  background: linear-gradient(90deg, transparent, var(--ir-healthy));
+  filter: drop-shadow(0 0 4px color-mix(in srgb, var(--ir-healthy) 70%, transparent));
+  animation: ir-comet 3.4s ease-in-out infinite alternate;
+}
+@keyframes ir-comet {
+  from { left: -6px; opacity: .35; }
+  to { left: calc(100% - 12px); opacity: 1; }
+}
+/* No open tasks: the comet parks at the far end and stops moving. */
+.ir-pg-comet.is-idle::after { animation: none; left: calc(100% - 12px); opacity: 1; }
+
+/* Filament: the work so far as a filled line, its head a lit dot. */
+.ir-pg-filament {
+  position: relative;
+  width: 80px;
+  height: 2px;
+  border-radius: 1px;
+  background: var(--background-modifier-hover);
+}
+.ir-pg-fil-fill {
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+  border-radius: 1px;
+  background: var(--ir-healthy);
+  opacity: .85;
+}
+.ir-pg-fil-head {
+  position: absolute;
+  top: -2px;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--ir-healthy);
+  box-shadow: 0 0 6px color-mix(in srgb, var(--ir-healthy) 60%, transparent);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ir-pg-node.is-current { animation: none; }
+  .ir-pg-comet::after { animation: none; }
+}
+
+/* The "oldest thread" age on an aim. */
+.ir-age {
+  flex: none;
+  color: var(--ir-stale);
+  font-size: var(--font-ui-smallest, 10px);
+  font-variant-numeric: tabular-nums;
+}
+
+/* The name prompt / date modal input. */
+.ir-prompt-input {
+  width: 100%;
+  margin: 6px 0;
+  padding: 6px 8px;
+  border: 1px solid var(--background-modifier-border);
+  border-radius: var(--radius-s, 4px);
+  background: var(--background-primary);
+  color: var(--text-normal);
+  font-family: var(--font-interface);
+  font-size: var(--font-ui-medium, 14px);
+}
+.ir-prompt-input:focus { outline: none; border-color: var(--text-accent); }
+
+/* The pages index — clicking opens the page beside the pane. */
+/* Pages grouped under their sub-objective, as Index's per-section notes. */
+.ir-pages-section {
+  margin: 8px 0 2px;
+  padding: 2px 6px;
+  color: var(--text-faint);
+  font-family: var(--font-interface);
+  font-size: var(--font-ui-smallest, 10px);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: .05em;
+}
+.ir-pages-ct {
+  color: var(--text-faint);
+  font-family: var(--font-interface);
+  font-size: var(--font-ui-smaller, 11px);
+  font-variant-numeric: tabular-nums;
+}
+.ir-page-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  width: 100%;
+  padding: 4px 6px;
+  background: none;
+  border: none;
+  border-left: 2px solid transparent;
+  border-radius: var(--radius-s, 4px);
+  color: var(--text-muted);
+  font-family: var(--font-interface);
+  font-size: var(--font-ui-small, 13px);
+  text-align: left;
+  cursor: pointer;
+}
+.ir-page-item:hover { background: var(--background-modifier-hover); color: var(--text-normal); border-left-color: var(--ir-healthy); }
+/* ＋ Page rides at the bottom of the pages list, as in Index. */
+.ir-pages-add { margin-top: 6px; padding-left: 6px; }
+.ir-page-dot {
+  flex: none;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--text-faint);
+}
+.ir-page-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+.ir-pane-empty {
+  color: var(--text-faint);
+  font-family: var(--font-interface);
+  font-size: var(--font-ui-small, 13px);
+  padding: 6px 2px;
+}
+.ir-pane-empty code {
+  background: var(--background-modifier-border);
+  border-radius: 3px;
+  padding: 1px 5px;
+}
+
+.ir-status {
+  max-width: 460px;
+  margin: 14px auto 0;
+  color: var(--text-faint);
+  font-size: var(--font-ui-smaller, 11px);
+  text-align: center;
+}
+
+.ir-empty {
+  color: var(--text-muted);
+  padding: 60px 24px;
+  text-align: center;
+  font-size: var(--font-ui-small, 13px);
+  overflow-y: auto;
+}
+.ir-empty-icon { font-size: 34px; margin-bottom: 10px; color: var(--text-faint); }
+.ir-empty code {
+  background: var(--background-modifier-border);
+  border-radius: 3px;
+  padding: 1px 5px;
+}
+/* The question autocomplete (EditorSuggest): one row — what it is, and
+   the question it would spin off. */
+.ir-q-suggest-label {
+  color: var(--text-faint);
+  font-size: var(--font-ui-smaller, 11px);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.ir-q-suggest-text {
+  color: var(--text-normal);
+  font-size: var(--font-ui-medium, 14px);
+  margin-top: 2px;
+}

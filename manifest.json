@@ -1,0 +1,10 @@
+{
+  "id": "index",
+  "name": "Index",
+  "version": "1.0.0",
+  "minAppVersion": "1.4.0",
+  "description": "The Index projects ring and project pane in Obsidian: the map, the quest log, and your notes as plain markdown.",
+  "author": "rsv",
+  "authorUrl": "https://github.com/zcqsrsi/index",
+  "isDesktopOnly": false
+}

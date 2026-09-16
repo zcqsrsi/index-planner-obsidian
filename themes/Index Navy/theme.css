@@ -1,0 +1,81 @@
+/* Index Navy — the Navy pair from index-planner, ported to Obsidian.
+   Light mode: Navy Dawn (navy, lit). Dark mode: Navy (deep navy).
+   The --ir-* tokens re-tune the Index Ring plugin's fate colors. */
+
+body.theme-light {
+  --background-primary: #eef2f6;
+  --background-primary-alt: #d8e3ee;
+  --background-secondary: #e3eaf2;
+  --background-secondary-alt: #e4ebf2;
+  --titlebar-background: #e3eaf2;
+  --titlebar-background-focused: #e3eaf2;
+  --titlebar-text: #5d6f8a;
+  --text-normal: #24354d;
+  --text-muted: #5d6f8a;
+  --text-faint: color-mix(in srgb, #5d6f8a 66%, transparent);
+  --text-accent: #0067b8;
+  --text-accent-hover: #00589e;
+  --text-on-accent: #ffffff;
+  --interactive-accent: #0067b8;
+  --interactive-accent-hover: #00589e;
+  --background-modifier-border: #c9d6e4;
+  --background-modifier-border-hover: #d8e3ee;
+  --background-modifier-border-focus: #0067b8;
+  --checkbox-color: #0067b8;
+  --checkbox-color-hover: #00589e;
+  --checkbox-marker-color: #ffffff;
+  --link-color: #0067b8;
+  --link-color-hover: #00589e;
+  --link-unresolved-color: #b23e3e;
+  --code-background: #e4ebf2;
+  --code-comment: #5d6f8a;
+  --code-function: #8a6d1c;
+  --code-keyword: #b23e3e;
+  --code-string: #a05a3c;
+  --code-value: #3f7d3a;
+  --code-property: #0e7d78;
+  --code-tag: #b23e3e;
+  --ir-healthy: #0067b8;
+  --ir-overdue: #b23e3e;
+  --ir-stale: #8a6d1c;
+  --ir-dim: #5d6f8a;
+}
+
+body.theme-dark {
+  --background-primary: #030713;
+  --background-primary-alt: #1a2c56;
+  --background-secondary: #0b152f;
+  --background-secondary-alt: #101d3d;
+  --titlebar-background: #0b152f;
+  --titlebar-background-focused: #0b152f;
+  --titlebar-text: #5d6a85;
+  --text-normal: #8b9bb6;
+  --text-muted: #5d6a85;
+  --text-faint: color-mix(in srgb, #5d6a85 66%, transparent);
+  --text-accent: #007acc;
+  --text-accent-hover: #1a8ad8;
+  --text-on-accent: #ffffff;
+  --interactive-accent: #007acc;
+  --interactive-accent-hover: #1a8ad8;
+  --background-modifier-border: #17284f;
+  --background-modifier-border-hover: #1a2c56;
+  --background-modifier-border-focus: #007acc;
+  --checkbox-color: #007acc;
+  --checkbox-color-hover: #1a8ad8;
+  --checkbox-marker-color: #ffffff;
+  --link-color: #007acc;
+  --link-color-hover: #1a8ad8;
+  --link-unresolved-color: #d16969;
+  --code-background: #101d3d;
+  --code-comment: #5d6a85;
+  --code-function: #dcdcaa;
+  --code-keyword: #d16969;
+  --code-string: #ce9178;
+  --code-value: #b5cea8;
+  --code-property: #4ec9b0;
+  --code-tag: #d16969;
+  --ir-healthy: #007acc;
+  --ir-overdue: #d16969;
+  --ir-stale: #dcdcaa;
+  --ir-dim: #5d6a85;
+}
